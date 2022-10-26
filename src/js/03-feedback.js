@@ -7,12 +7,7 @@ const LOCALSTORAGE_KEY = "feedback-form-state";
 form.addEventListener("input", throttle(onFormData, 500));
 form.addEventListener("submit", onSubmitForm);
 
-const formData = {};
-
-function onFormData(e) {
-	formData[e.target.name] = e.target.value;
-	save(LOCALSTORAGE_KEY, formData);
-}
+let formData = {};
 
 function onSubmitForm(e) {
 	console.log(load(LOCALSTORAGE_KEY));
@@ -21,14 +16,20 @@ function onSubmitForm(e) {
 	localStorage.removeItem(LOCALSTORAGE_KEY);
 }
 
+function onFormData(e) {
+	formData[e.target.name] = e.target.value;
+	save(LOCALSTORAGE_KEY, formData);
+}
+
 (function dataFromLocalStorage() {
 	const data = load(LOCALSTORAGE_KEY);
 	const email = document.querySelector('.feedback-form input');
 	const message = document.querySelector('.feedback-form textarea');
 
 	if (data) {
-		email.value = data.email ? email.value = data.email : '';
-		message.value = data.message ? message.value = data.message : '';
+		formData = data;
+		email.value = formData.email || '';
+		message.value = formData.message || '';
 	}
 })();
 
